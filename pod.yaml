@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: core-k8s-v2
+  labels:
+    role: just-an-example
+    app: my-example-app
+    organization: friends-of-manning
+    creator: Artem
+spec:
+  containers:
+  - name: any-old-name-will-do
+    image: docker.io/busybox:latest
+    command: ['sleep', '10000']
+    resources:
+      limits:
+        cpu: 2
+      requests:
+        cpu: 1
+    ports:
+    - name: webapp-port
+      containerPort: 80
+      protocol: TCP
+
