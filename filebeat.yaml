@@ -1,18 +1,21 @@
-prospectors:
-        -
-            paths:
-                - "/etc/logs/nginx/access.log"
-            document_type: nginx-access
-        -
-            paths:
-                - "/var/log/nginx/error.log"
-            document_type: nginx-error
-output:
-    logstash:
-        hosts: ["elk:5044"]
-        tls:
-          certificate_authorities:
-            - /etc/pki/tls/certs/logstash-beats.crt
-        timeout: 15
-    file:
-        path: "/tmp/filebeat"
+version: '2'
+services:
+    filebeat:
+        build: .
+        image: ccfa730e72e9
+        volumes:
+            - /path/to/myElk/log/nginx:/etc/logs/nginx # логи nginx
+            - /path/to/myElk/filebeat:/etc/filebeat
+            - /path/to/myElk/filebeat/tmp:/tmp/filebeat
+            - /path/to/myElk/filebeat/certs:/etc/pki/tls/certs
+        links:
+            - "elk"
+        depends_on:
+            - "elk"
+        #entrypoint: ./time-to-start.sh
+    elk:
+        image: a75af527c316
+        ports:
+            - "5601:5601" #kibana
+            - "9200:9200" #elastic
+            - "5044:5044" #logstash beats filebeat
